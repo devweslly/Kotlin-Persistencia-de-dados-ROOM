@@ -17,6 +17,7 @@ data class Produto(
         @PrimaryKey(autoGenerate = true) val id: Long = 0L,
         val nome: String,
         val descricao: String,
+        // O SQLite nao sabe lidar com o tipo BigDecimal, então é preciso fazer a conversão para um tipo de afinidade
         val valor: BigDecimal,
         val imagem: String? = null
 ) : Parcelable
