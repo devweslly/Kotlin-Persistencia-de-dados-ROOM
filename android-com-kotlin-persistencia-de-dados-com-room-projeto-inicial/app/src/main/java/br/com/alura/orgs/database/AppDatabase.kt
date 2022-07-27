@@ -9,7 +9,7 @@ import br.com.alura.orgs.model.Produto
 
 // Tod0 componente do tipo Database tem que herdar da classe RoomDatabase()
 // É preciso colacar a notação @Database com os parametros entities e version
-// Esta anotação serve para que o Room utilizando o anotetionProcess consiga gerar o code.
+// Esta anotação serve para que o Room utilizando o annotation processor consiga gerar o code.
 // O entities serve para determinar quais foram as entidades que configuramos dentro do projeto,
 // que o Room vai conseguir configurar se comunicar com o SQLite. Neste caso só temos um produto
 // e vamos declará-lo dentro do entities. E sempre é esperado um array, entao tem que mandar como array
