@@ -12,7 +12,9 @@ import br.com.alura.orgs.model.Produto
 
 class ListaProdutosAdapter(
     private val context: Context,
-    produtos: List<Produto>,
+    // Ao receber uma lista vazia como valor padrão,
+    // não é mais necessário o envio de uma lista de produtos na construção do adapter.
+    produtos: List<Produto> = emptyList(),
     var quandoClicaNoItem: (produto: Produto) -> Unit = {}
 ) : RecyclerView.Adapter<ListaProdutosAdapter.ViewHolder>() {
 
