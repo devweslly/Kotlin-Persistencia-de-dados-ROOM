@@ -18,7 +18,7 @@ import br.com.alura.orgs.model.Produto
 // e é preciso mandar como uma referência de classe.
 // O version recebe um número Int e é basicamente a versão do banco de dado (que implica na técnica de migração,
 // que ajusta o banco de dado de conforme mudanças). A classe Produto é a primeira versão do banco de dados
-@Database(entities = [Produto::class], version = 1)
+@Database(entities = [Produto::class], version = 1, exportSchema = true)
 @TypeConverters(Converters::class) // referência da classe de conversão
 abstract class AppDatabase : RoomDatabase() {
     // Função para o database gerar o código do nosso DAO
