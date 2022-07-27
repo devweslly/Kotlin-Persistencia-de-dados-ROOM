@@ -1,6 +1,8 @@
 package br.com.alura.orgs.database
 
+import android.content.Context
 import androidx.room.Database
+import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import br.com.alura.orgs.database.converter.Converters
@@ -22,4 +24,25 @@ abstract class AppDatabase : RoomDatabase() {
     // Função para o database gerar o código do nosso DAO
     // Use o nome do DAO que vc quer e devolva uma referencia do DAO que está querendo criar
     abstract fun produtoDao(): ProdutoDao
+
+    // É usado ocompanion object para a função não precisar de uma instancia para funcionar
+    companion object {
+        // Função que cria e da acesso a instancia do banco de dados do AppDatabase
+        // Encapsulando a lógica para criar o banco de dado e reaproveitar o código
+        fun instancia(context: Context): AppDatabase{
+            return Room.databaseBuilder( // Método responsável por criar a instancia do banco de dados
+                // Contexto da Activity
+                // Sempre que alguém chamar o método vai precisar mandar o context para conseguir rodar
+                context,
+                // Classe de referência que representa o Database
+                AppDatabase::class.java,
+                // String que representa o nome do arquivo que será gerado
+                // para conter a implementação do banco de dado
+                // vamos usar o nome do app simulando uma extensão de banco de dados (facilidade em identificar)
+                "orgs.db"
+            )
+                .allowMainThreadQueries() // Config o AppDatabase para rodar na thread principal (Não é uma boa prática)
+                .build() // gerar uma instância do tipo da classe AppDatabase mandada como referencia
+        }
+    }
 }

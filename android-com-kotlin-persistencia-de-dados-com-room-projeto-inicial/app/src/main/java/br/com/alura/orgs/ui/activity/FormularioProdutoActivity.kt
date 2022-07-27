@@ -2,7 +2,9 @@ package br.com.alura.orgs.ui.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.Room
 import br.com.alura.orgs.dao.ProdutosDao
+import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
@@ -30,12 +32,17 @@ class FormularioProdutoActivity : AppCompatActivity() {
         }
     }
 
+    // Inserção no banco de dados e apresentar na lista de produtos
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
-        val dao = ProdutosDao()
+        // Criar banco de dados
+        // db (instancia de ProdutoDao) vai dar acesso ao Dao e aos comportamentes de buscar e salvar
+        val db = AppDatabase.instancia(this) // Acessando o banco de dado por meio da fun instancia
+        val produtoDao = db.produtoDao() // Acessando o Dao
         botaoSalvar.setOnClickListener {
+            // Cria produto novo ao clicar em salvar
             val produtoNovo = criaProduto()
-            dao.adiciona(produtoNovo)
+            produtoDao.salva(produtoNovo) // Recebendo referencia de produtoNovo para salvar no banco
             finish()
         }
     }
