@@ -1,6 +1,7 @@
 package br.com.alura.orgs.database.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import br.com.alura.orgs.model.Produto
@@ -21,4 +22,8 @@ interface ProdutoDao {
     // O vararg é para mandar (salvar neste caso) mais de um registro
     @Insert
     fun salva(vararg produto: Produto)
+
+    //Código que irá remover uma entidade no banco de dados (neste caso um produto)
+    @Delete
+    fun remove(produto: Produto)
 }
