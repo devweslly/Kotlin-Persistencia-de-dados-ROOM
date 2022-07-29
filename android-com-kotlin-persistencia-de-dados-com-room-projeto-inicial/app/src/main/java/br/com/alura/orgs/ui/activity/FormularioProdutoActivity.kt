@@ -15,6 +15,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
     }
     private var url: String? = null
+    private var idProduto = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +28,21 @@ class FormularioProdutoActivity : AppCompatActivity() {
                     url = imagem
                     binding.activityFormularioProdutoImagem.tentaCarregarImagem(url)
                 }
+        }
+
+        // Mostrar as infos para editar
+        // ?.let garante que só irá chamar o código se não for nulo
+        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
+            // Título da AppBar
+            title = "Alterar Produto"
+            // Identificando se o produto é novo ou não verificando pelo ID (se for 0 é um valor novo)
+            // Se for um valor diferente, terá a decisão de alterar
+            idProduto = produtoCarregado.id
+            // Carregando as infos no formulário a partir do produtoCarregado
+            binding.activityFormularioProdutoImagem.tentaCarregarImagem(produtoCarregado.imagem)
+            binding.activityFormularioProdutoNome.setText(produtoCarregado.nome)
+            binding.activityFormularioProdutoDescricao.setText(produtoCarregado.descricao)
+            binding.activityFormularioProdutoValor.setText(produtoCarregado.valor.toPlainString())
         }
     }
 

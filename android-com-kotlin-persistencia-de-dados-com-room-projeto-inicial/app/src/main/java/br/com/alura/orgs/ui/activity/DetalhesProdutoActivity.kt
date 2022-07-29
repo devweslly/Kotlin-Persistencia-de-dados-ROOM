@@ -1,5 +1,6 @@
 package br.com.alura.orgs.ui.activity
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -60,10 +61,18 @@ class DetalhesProdutoActivity : AppCompatActivity() {
                     produtoDao.remove(produto)
                     finish()
                 }
-                // Opção 1
+                // Opção 2
                 R.id.menu_detalhes_produto_editar -> {
                     // O que fazer (ação) ao selecionar opção 2
-                    Log.i(TAG, "onOptionsItemSelected: editar")
+                    // abrir a activity por meio da intent
+                    // Criando uma nova Intent que vai receber o contexto da nossa classe DetalhesProdutoActivity (this)
+                    // e em seguida acessamos a FormularioProdutoActivity
+                    // A scope function apply indica que queremos colocar mais
+                    // comportamentos exclusivos dentro do código (dentro da Intent)
+                    Intent(this, FormularioProdutoActivity::class.java).apply {
+                        putExtra(CHAVE_PRODUTO, produto) // coloca uma chave e um valor e manda info para a activity
+                        startActivity(this)
+                    }
                 }
             }
         }
@@ -72,6 +81,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
     }
 
     private fun tentaCarregarProduto() {
+        // O getParcelableExtra que a patir dele conseguimos chamar novas Activities e mandar infos para elas
         intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
             produto = produtoCarregado // tendo acesso a uma propetie de nome produto
             preencheCampos(produtoCarregado)
