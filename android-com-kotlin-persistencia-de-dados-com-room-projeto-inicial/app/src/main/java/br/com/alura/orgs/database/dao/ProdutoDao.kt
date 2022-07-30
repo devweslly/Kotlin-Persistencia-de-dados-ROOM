@@ -1,9 +1,6 @@
 package br.com.alura.orgs.database.dao
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import br.com.alura.orgs.model.Produto
 
 // Pacote específico para config no banco de dados
@@ -26,4 +23,8 @@ interface ProdutoDao {
     //Código que irá remover uma entidade no banco de dados (neste caso um produto)
     @Delete
     fun remove(produto: Produto)
+
+    // O remove e altera sempre vai fazer a alteração devido o id
+    @Update
+    fun altera(produto: Produto)
 }

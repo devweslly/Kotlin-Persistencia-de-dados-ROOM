@@ -38,6 +38,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
             // Identificando se o produto é novo ou não verificando pelo ID (se for 0 é um valor novo)
             // Se for um valor diferente, terá a decisão de alterar
             idProduto = produtoCarregado.id
+            url = produtoCarregado.imagem // Indica que a url é a imagem do produtoCarregado
             // Carregando as infos no formulário a partir do produtoCarregado
             binding.activityFormularioProdutoImagem.tentaCarregarImagem(produtoCarregado.imagem)
             binding.activityFormularioProdutoNome.setText(produtoCarregado.nome)
@@ -56,7 +57,13 @@ class FormularioProdutoActivity : AppCompatActivity() {
         botaoSalvar.setOnClickListener {
             // Cria produto novo ao clicar em salvar
             val produtoNovo = criaProduto()
-            produtoDao.salva(produtoNovo) // Recebendo referencia de produtoNovo para salvar no banco
+            // Lógica que decidi se vai alterar ou salvar um produto considerando o valor do id do produto
+            if (idProduto > 0) {
+                // Se o idProduto > 0 é pq o produto já existe
+                produtoDao.altera(produtoNovo)
+            } else {
+                produtoDao.salva(produtoNovo) // Recebendo referencia de produtoNovo para salvar no banco
+            }
             finish()
         }
     }
@@ -75,6 +82,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         }
 
         return Produto(
+            id = idProduto,
             nome = nome,
             descricao = descricao,
             valor = valor,

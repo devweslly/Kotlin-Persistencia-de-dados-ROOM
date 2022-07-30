@@ -14,7 +14,8 @@ data class Produto(
         // valor único para a propetie id.
         // Estratégia de auto incremento de ids
         // O id sempre precisa passar o valor 0, para o Room entender que ele vai gerar este valor.
-        @PrimaryKey(autoGenerate = true) val id: Long = 0L,
+        @PrimaryKey(autoGenerate = true)
+        val id: Long = 0L,
         val nome: String,
         val descricao: String,
         // O SQLite nao sabe lidar com o tipo BigDecimal, então é preciso fazer a conversão para um tipo de afinidade
