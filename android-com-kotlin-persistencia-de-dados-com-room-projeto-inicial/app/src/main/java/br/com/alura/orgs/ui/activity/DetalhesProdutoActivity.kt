@@ -17,8 +17,7 @@ private const val TAG = "DetalhesProduto"
 
 class DetalhesProdutoActivity : AppCompatActivity() {
 
-    private var produtoId: Long? = null
-
+    private var produtoId: Long = 0L
     // lateinit indica que podemos atribuir propeties que não precisa
     // ser inicializada no momento que estamos declarando ela (ela pode ser inicializada em outro momento)
     private var produto: Produto? = null
@@ -40,11 +39,13 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        buscaProduto()
+    }
+
+    private fun buscaProduto() {
         // Pegar o ID e carregar um produto
-        produtoId?.let { id ->
-            // Inicializando este produto
-            produto = produtoDao.buscaPorId(id)
-        }
+        // Inicializando este produto
+        produto = produtoDao.buscaPorId(produtoId)
         // Verifica se o produto é nulo. Se for nulo, não existir no banco de dados, finaliza a activity
         produto?.let {
             // Se tiver as infos esperadas, preenche as infos e manda o produto
@@ -89,8 +90,8 @@ class DetalhesProdutoActivity : AppCompatActivity() {
                 // comportamentos exclusivos dentro do código (dentro da Intent)
                 Intent(this, FormularioProdutoActivity::class.java).apply {
                     putExtra(
-                        CHAVE_PRODUTO,
-                        produto
+                        CHAVE_PRODUTO_ID,
+                        produtoId
                     ) // coloca uma chave e um valor e manda info para a activity
                     startActivity(this)
                 }
@@ -102,9 +103,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     private fun tentaCarregarProduto() {
         // O getParcelableExtra que a partir dele conseguimos chamar novas Activities e mandar infos para elas
-        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
-            produtoId = produtoCarregado.id
-        } ?: finish()
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
     }
 
     private fun preencheCampos(produtoCarregado: Produto) {

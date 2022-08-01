@@ -3,6 +3,7 @@ package br.com.alura.orgs.ui.activity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import br.com.alura.orgs.database.AppDatabase
+import br.com.alura.orgs.database.dao.ProdutoDao
 import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
@@ -15,7 +16,13 @@ class FormularioProdutoActivity : AppCompatActivity() {
         ActivityFormularioProdutoBinding.inflate(layoutInflater)
     }
     private var url: String? = null
-    private var idProduto = 0L
+    private var produtoId = 0L
+    private val produtoDao: ProdutoDao by lazy {
+        // Criar banco de dados
+        // db (instancia de ProdutoDao) vai dar acesso ao Dao e aos comportamentes de buscar e salvar
+        val db = AppDatabase.instancia(this) // Acessando o banco de dado por meio da fun instancia
+        db.produtoDao() // Acessando o Dao
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,39 +38,42 @@ class FormularioProdutoActivity : AppCompatActivity() {
         }
 
         // Mostrar as infos para editar
-        // ?.let garante que só irá chamar o código se não for nulo
-        intent.getParcelableExtra<Produto>(CHAVE_PRODUTO)?.let { produtoCarregado ->
+        tentaCarregarProduto()
+    }
+
+    private fun tentaCarregarProduto() {
+        produtoId = intent.getLongExtra(CHAVE_PRODUTO_ID, 0L)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        tentaBuscarProduto()
+    }
+
+    private fun tentaBuscarProduto() {
+        produtoDao.buscaPorId(produtoId)?.let {
             // Título da AppBar
             title = "Alterar Produto"
-            // Identificando se o produto é novo ou não verificando pelo ID (se for 0 é um valor novo)
-            // Se for um valor diferente, terá a decisão de alterar
-            idProduto = produtoCarregado.id
-            url = produtoCarregado.imagem // Indica que a url é a imagem do produtoCarregado
-            // Carregando as infos no formulário a partir do produtoCarregado
-            binding.activityFormularioProdutoImagem.tentaCarregarImagem(produtoCarregado.imagem)
-            binding.activityFormularioProdutoNome.setText(produtoCarregado.nome)
-            binding.activityFormularioProdutoDescricao.setText(produtoCarregado.descricao)
-            binding.activityFormularioProdutoValor.setText(produtoCarregado.valor.toPlainString())
+            preencheCampos(it)
         }
+    }
+
+    private fun preencheCampos(produto: Produto) {
+        url = produto.imagem // Indica que a url é a imagem do produtoCarregado
+        // Carregando as infos no formulário a partir do produtoCarregado
+        binding.activityFormularioProdutoImagem.tentaCarregarImagem(produto.imagem)
+        binding.activityFormularioProdutoNome.setText(produto.nome)
+        binding.activityFormularioProdutoDescricao.setText(produto.descricao)
+        binding.activityFormularioProdutoValor.setText(produto.valor.toPlainString())
     }
 
     // Inserção no banco de dados e apresentar na lista de produtos
     private fun configuraBotaoSalvar() {
         val botaoSalvar = binding.activityFormularioProdutoBotaoSalvar
-        // Criar banco de dados
-        // db (instancia de ProdutoDao) vai dar acesso ao Dao e aos comportamentes de buscar e salvar
-        val db = AppDatabase.instancia(this) // Acessando o banco de dado por meio da fun instancia
-        val produtoDao = db.produtoDao() // Acessando o Dao
         botaoSalvar.setOnClickListener {
             // Cria produto novo ao clicar em salvar
             val produtoNovo = criaProduto()
-            // Lógica que decidi se vai alterar ou salvar um produto considerando o valor do id do produto
-            if (idProduto > 0) {
-                // Se o idProduto > 0 é pq o produto já existe
-                produtoDao.altera(produtoNovo)
-            } else {
-                produtoDao.salva(produtoNovo) // Recebendo referencia de produtoNovo para salvar no banco
-            }
+            produtoDao.salva(produtoNovo)
             finish()
         }
     }
@@ -82,7 +92,7 @@ class FormularioProdutoActivity : AppCompatActivity() {
         }
 
         return Produto(
-            id = idProduto,
+            id = produtoId,
             nome = nome,
             descricao = descricao,
             valor = valor,
