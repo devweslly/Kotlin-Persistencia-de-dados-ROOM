@@ -27,4 +27,9 @@ interface ProdutoDao {
     // O remove e altera sempre vai fazer a alteração devido o id
     @Update
     fun altera(produto: Produto)
+
+    // Consulta que busca uma informação com um tipo de filtro WHERE id = :id
+    // assim conseguimos pegar um produto específico, que tenha o id
+    @Query("SELECT * FROM Produto WHERE id = :id")
+    fun buscaPorId(id: Long) : Produto?
 }
